@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All About Me! English Adventure Worksheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['"Fredoka One"', 'cursive'],
+                        quicksand: ['"Quicksand"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            yellow: '#FBBF24',
+                            pink: '#EC4899',
+                            blue: '#3B82F6',
+                            green: '#10B981',
+                            orange: '#F97316'
+                        }
+                    },
+                    keyframes: {
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(-4px)' },
+                            '50%': { transform: 'translateY(4px)' }
+                        },
+                        popIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    },
+                    animation: {
+                        'bounce-soft': 'bounceSoft 2s infinite ease-in-out',
+                        'pop-in': 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #F3F4F6;
+            background-image: radial-gradient(#E5E7EB 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        .heading-font {
+            font-family: 'Fredoka One', cursive;
+        }
+        .wood-border {
+            border: 4px solid #854d0e;
+            box-shadow: 0 8px 0 #713f12, 0 12px 15px rgba(0,0,0,0.2);
+        }
+        .btn-game {
+            transition: all 0.1s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .btn-game:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+        .word-chip {
+            touch-action: manipulation;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F3F4F6;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between p-2 sm:p-4">
+
+    <!-- Sound Toggle & Audio Controller -->
+    <div class="fixed top-3 right-3 z-50 flex items-center gap-2">
+        <button id="soundToggle" onclick="toggleSound()" class="bg-white p-3 rounded-full shadow-lg border-2 border-amber-400 text-amber-500 hover:bg-amber-50 transition transform hover:scale-105 active:scale-95" title="Toggle Sound">
+            <i id="soundIcon" class="fas fa-volume-up text-xl"></i>
+        </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto w-full">
+        <!-- Main Container -->
+        <header class="bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 rounded-3xl p-4 sm:p-6 text-white shadow-xl mb-6 border-4 border-white relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 opacity-20 text-8xl pointer-events-none">
+                <i class="fas fa-star text-white"></i>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+                <div class="text-center md:text-left">
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs sm:text-sm font-bold tracking-wide uppercase inline-block mb-1">KSSR Semakan Primary Year 2 & 3</span>
+                    <h1 class="heading-font text-2xl sm:text-4xl text-yellow-100 drop-shadow-md">All About Me! 个人资料卡</h1>
+                    <p class="text-xs sm:text-sm text-amber-100 font-semibold">Day 1 Interactive English Worksheet (TP3 - TP4)</p>
+                </div>
+                
+                <!-- Score & Progress Box -->
+                <div class="bg-white/90 text-slate-800 rounded-2xl p-3 sm:p-4 shadow-md flex items-center gap-4 w-full md:w-auto justify-around">
+                    <div class="text-center">
+                        <div class="text-xs text-slate-500 font-bold uppercase">Total Score</div>
+                        <div id="totalScore" class="heading-font text-2xl text-purple-600">0</div>
+                    </div>
+                    <div class="h-8 w-px bg-slate-300"></div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-500 font-bold uppercase">Stars</div>
+                        <div class="flex text-amber-400 text-lg gap-1" id="starContainer">
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Info Inputs -->
+            <div class="mt-4 pt-4 border-t border-white/30 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs text-amber-100 font-bold mb-1">Name (姓名):</label>
+                    <input type="text" id="studentName" placeholder="Enter your name..." class="w-full px-3 py-1.5 rounded-xl text-slate-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner">
+                </div>
+                <div>
+                    <label class="block text-xs text-amber-100 font-bold mb-1">Class (班级):</label>
+                    <input type="text" id="studentClass" placeholder="e.g. 2 Mawar / 3 Alpha" class="w-full px-3 py-1.5 rounded-xl text-slate-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner">
+                </div>
+                <div>
+                    <label class="block text-xs text-amber-100 font-bold mb-1">Date (日期):</label>
+                    <input type="date" id="studentDate" class="w-full px-3 py-1.5 rounded-xl text-slate-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner">
+                </div>
+            </div>
+        </header>
+
+        <!-- Quest Map Level Selection Bar -->
+        <nav class="flex justify-between items-center mb-6 bg-white p-2 rounded-2xl shadow-md border-2 border-slate-200">
+            <button onclick="switchLevel(1)" id="tab-lvl-1" class="flex-1 py-2 px-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition bg-purple-500 text-white shadow-md">
+                <span class="bg-white text-purple-600 rounded-full w-6 h-6 flex items-center justify-center text-xs heading-font">1</span>
+                <span class="hidden sm:inline">Section A: Vocabulary</span>
+                <span class="sm:hidden">Sec A</span>
+            </button>
+            <div class="w-2 h-1 bg-slate-300"></div>
+            <button onclick="switchLevel(2)" id="tab-lvl-2" class="flex-1 py-2 px-3 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100 flex items-center justify-center gap-2 transition">
+                <span class="bg-slate-200 text-slate-600 rounded-full w-6 h-6 flex items-center justify-center text-xs heading-font">2</span>
+                <span class="hidden sm:inline">Section B: Profile Studio</span>
+                <span class="sm:hidden">Sec B</span>
+            </button>
+            <div class="w-2 h-1 bg-slate-300"></div>
+            <button onclick="switchLevel(3)" id="tab-lvl-3" class="flex-1 py-2 px-3 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100 flex items-center justify-center gap-2 transition">
+                <span class="bg-slate-200 text-slate-600 rounded-full w-6 h-6 flex items-center justify-center text-xs heading-font">3</span>
+                <span class="hidden sm:inline">Section C: Reading</span>
+                <span class="sm:hidden">Sec C</span>
+            </button>
+        </nav>
+
+        <!-- LEVEL 1: Section A - Vocabulary Quest -->
+        <div id="level-1" class="level-card bg-white rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-purple-200 animate-pop-in">
+            <div class="flex items-center justify-between border-b-2 border-purple-100 pb-4 mb-6">
+                <div>
+                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Level 1</span>
+                    <h2 class="heading-font text-2xl text-purple-700 mt-1">Section A: Key Vocabulary 重点词汇填空</h2>
+                    <p class="text-sm text-slate-500">Tap or drag the words from the Word Bank into the blanks!</p>
+                </div>
+                <div class="text-3xl text-purple-400">
+                    <i class="fas fa-spell-check"></i>
+                </div>
+            </div>
+
+            <!-- Word Bank Box -->
+            <div class="bg-amber-50 border-2 border-dashed border-amber-300 p-4 rounded-2xl mb-8">
+                <div class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+                    <i class="fas fa-store"></i> Word Bank 词汇库:
+                </div>
+                <div id="wordBank" class="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                    <!-- Word chips will be populated by JS -->
+                </div>
+            </div>
+
+            <!-- Sentences List -->
+            <div class="space-y-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center gap-2 text-base sm:text-lg font-semibold">
+                    <span>1. Hello! My</span>
+                    <span id="blank-1" onclick="returnWord('blank-1')" class="drop-zone inline-block border-b-4 border-purple-400 bg-white px-4 py-1 min-w-[120px] rounded-lg text-center cursor-pointer hover:bg-purple-50 text-purple-600 font-bold min-h-[40px]"></span>
+                    <span>is Lucas.</span>
+                    <span id="feedback-1" class="ml-auto text-xl"></span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center gap-2 text-base sm:text-lg font-semibold">
+                    <span>2. I am eight</span>
+                    <span id="blank-2" onclick="returnWord('blank-2')" class="drop-zone inline-block border-b-4 border-purple-400 bg-white px-4 py-1 min-w-[120px] rounded-lg text-center cursor-pointer hover:bg-purple-50 text-purple-600 font-bold min-h-[40px]"></span>
+                    <span>.</span>
+                    <span id="feedback-2" class="ml-auto text-xl"></span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center gap-2 text-base sm:text-lg font-semibold">
+                    <span>3. Pink is my</span>
+                    <span id="blank-3" onclick="returnWord('blank-3')" class="drop-zone inline-block border-b-4 border-purple-400 bg-white px-4 py-1 min-w-[120px] rounded-lg text-center cursor-pointer hover:bg-purple-50 text-purple-600 font-bold min-h-[40px]"></span>
+                    <span>colour.</span>
+                    <span id="feedback-3" class="ml-auto text-xl"></span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center gap-2 text-base sm:text-lg font-semibold">
+                    <span>4. What</span>
+                    <span id="blank-4" onclick="returnWord('blank-4')" class="drop-zone inline-block border-b-4 border-purple-400 bg-white px-4 py-1 min-w-[120px] rounded-lg text-center cursor-pointer hover:bg-purple-50 text-purple-600 font-bold min-h-[40px]"></span>
+                    <span>do you like?</span>
+                    <span id="feedback-4" class="ml-auto text-xl"></span>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-purple-50 border-2 border-purple-200 flex flex-wrap items-center gap-2 text-base sm:text-lg font-semibold relative">
+                    <span class="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-md font-bold">Year 3</span>
+                    <span>5. I like reading comic books</span>
+                    <span id="blank-5" onclick="returnWord('blank-5')" class="drop-zone inline-block border-b-4 border-purple-500 bg-white px-4 py-1 min-w-[120px] rounded-lg text-center cursor-pointer hover:bg-purple-100 text-purple-700 font-bold min-h-[40px]"></span>
+                    <span>it is fun.</span>
+                    <span id="feedback-5" class="ml-auto text-xl"></span>
+                </div>
+            </div>
+
+            <!-- Level 1 Submit & Reset Button -->
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="resetSectionA()" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-slate-700 transition">
+                    <i class="fas fa-undo mr-1"></i> Reset
+                </button>
+                <button onclick="checkSectionA()" class="btn-game px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold hover:brightness-110">
+                    Check Answers <i class="fas fa-check-circle ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- LEVEL 2: Section B - Profile Builder Studio -->
+        <div id="level-2" class="level-card bg-white rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-blue-200 hidden">
+            <div class="flex items-center justify-between border-b-2 border-blue-100 pb-4 mb-6">
+                <div>
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Level 2</span>
+                    <h2 class="heading-font text-2xl text-blue-600 mt-1">Section B: My Personal Profile Card 个人资料卡</h2>
+                    <p class="text-sm text-slate-500">Complete your profile card, choose/draw an avatar, and see your live card!</p>
+                </div>
+                <div class="text-3xl text-blue-400">
+                    <i class="fas fa-id-card"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Form Inputs Side -->
+                <div class="lg:col-span-7 space-y-4">
+                    
+                    <!-- Avatar Selection / Canvas Selector Tabs -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">1. Choose or Draw Your Portrait (头像):</label>
+                        
+                        <div class="flex gap-2 mb-3">
+                            <button type="button" onclick="setAvatarTab('preset')" id="tabPreset" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500 text-white">Choose Preset</button>
+                            <button type="button" onclick="setAvatarTab('draw')" id="tabDraw" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700">Draw Portrait</button>
+                        </div>
+
+                        <!-- Presets Option -->
+                        <div id="presetArea" class="flex flex-wrap gap-3 justify-center py-2">
+                            <div onclick="selectAvatar('boy1')" class="avatar-option cursor-pointer p-1 rounded-2xl border-4 border-transparent hover:border-blue-400 transition bg-white">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Lucas" class="w-14 h-14 rounded-xl" alt="Boy Avatar 1">
+                            </div>
+                            <div onclick="selectAvatar('girl1')" class="avatar-option cursor-pointer p-1 rounded-2xl border-4 border-transparent hover:border-blue-400 transition bg-white">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Sophia" class="w-14 h-14 rounded-xl" alt="Girl Avatar 1">
+                            </div>
+                            <div onclick="selectAvatar('cat')" class="avatar-option cursor-pointer p-1 rounded-2xl border-4 border-transparent hover:border-blue-400 transition bg-white">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Felix" class="w-14 h-14 rounded-xl" alt="Cat Avatar">
+                            </div>
+                            <div onclick="selectAvatar('hero')" class="avatar-option cursor-pointer p-1 rounded-2xl border-4 border-transparent hover:border-blue-400 transition bg-white">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aiden" class="w-14 h-14 rounded-xl" alt="Hero Avatar">
+                            </div>
+                        </div>
+
+                        <!-- Drawing Pad Option -->
+                        <div id="drawArea" class="hidden flex-col items-center">
+                            <canvas id="drawingCanvas" width="180" height="180" class="border-2 border-dashed border-blue-400 rounded-2xl bg-white cursor-crosshair touch-none"></canvas>
+                            <div class="flex gap-2 mt-2">
+                                <button type="button" onclick="clearCanvas()" class="px-3 py-1 bg-rose-100 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-200"><i class="fas fa-trash"></i> Clear</button>
+                                <input type="color" id="drawColor" value="#3B82F6" class="w-8 h-8 rounded cursor-pointer border-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Fields -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">My name is:</label>
+                        <input type="text" id="profName" oninput="updateProfileCard()" placeholder="e.g. Lucas / Sarah" class="w-full px-4 py-2 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">I am (years old):</label>
+                        <select id="profAge" onchange="updateProfileCard()" class="w-full px-4 py-2 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none font-semibold">
+                            <option value="7">7 years old</option>
+                            <option value="8" selected>8 years old</option>
+                            <option value="9">9 years old</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">My favourite colour is:</label>
+                        <div class="flex items-center gap-3">
+                            <select id="profColorSelect" onchange="updateProfileCard()" class="w-full px-4 py-2 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none font-semibold">
+                                <option value="Red">Red 🔴</option>
+                                <option value="Pink">Pink 💖</option>
+                                <option value="Blue" selected>Blue 💙</option>
+                                <option value="Green">Green 💚</option>
+                                <option value="Yellow">Yellow 💛</option>
+                                <option value="Purple">Purple 💜</option>
+                                <option value="Orange">Orange 🧡</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">I like (hobby):</label>
+                        <input type="text" id="profHobby" oninput="updateProfileCard()" placeholder="e.g. reading comic books / playing football" class="w-full px-4 py-2 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none font-semibold">
+                    </div>
+
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                        <div class="text-xs font-bold text-blue-700 mb-1 uppercase">Year 3 Extension (三年级进阶挑战):</div>
+                        <label class="block text-xs text-slate-600 mb-1">I like [hobby] because it is:</label>
+                        <input type="text" id="profReason" oninput="updateProfileCard()" placeholder="e.g. fun / exciting / interesting" class="w-full px-3 py-1.5 rounded-lg border border-blue-300 focus:outline-none text-sm">
+                    </div>
+
+                </div>
+
+                <!-- Live Card Preview -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Live Preview Card</div>
+                    
+                    <!-- Card Element -->
+                    <div id="profileCardCard" class="w-full max-w-sm bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-2xl relative overflow-hidden border-4 border-white transition transform hover:scale-[1.02]">
+                        <div class="absolute top-0 right-0 translate-x-4 -translate-y-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                        
+                        <div class="flex justify-between items-center mb-4 border-b border-white/20 pb-3">
+                            <span class="heading-font text-xl text-yellow-300">PROFILE CARD</span>
+                            <span class="bg-yellow-400 text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">Primary Student</span>
+                        </div>
+
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-24 h-24 rounded-2xl bg-white p-1 shadow-lg mb-3 flex items-center justify-center overflow-hidden border-2 border-yellow-300">
+                                <img id="cardAvatarImg" src="https://api.dicebear.com/7.x/bottts/svg?seed=Lucas" class="w-full h-full object-cover rounded-xl" alt="Selected Avatar">
+                            </div>
+
+                            <h3 id="cardName" class="heading-font text-2xl text-white drop-shadow-sm mb-1">Lucas</h3>
+                            <p id="cardAge" class="text-xs text-blue-100 bg-white/20 px-3 py-0.5 rounded-full font-bold mb-4">8 years old</p>
+
+                            <div class="w-full space-y-2 text-left text-xs bg-white/10 p-3.5 rounded-2xl border border-white/10">
+                                <p><i class="fas fa-palette mr-1.5 text-yellow-300"></i> Favourite Colour: <span id="cardColor" class="font-bold text-yellow-200">Blue</span></p>
+                                <p><i class="fas fa-heart mr-1.5 text-pink-300"></i> Hobby: <span id="cardHobby" class="font-bold">reading comic books</span></p>
+                                <p id="cardReasonRow" class="text-blue-100 border-t border-white/10 pt-2"><i class="fas fa-star mr-1.5 text-yellow-300"></i> Why: <span id="cardReason" class="italic">because it is fun</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveProfileCard()" class="mt-6 btn-game px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl shadow-md w-full max-w-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle"></i> Complete Section B
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEVEL 3: Section C - Reading Comprehension Challenge -->
+        <div id="level-3" class="level-card bg-white rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-emerald-200 hidden">
+            <div class="flex items-center justify-between border-b-2 border-emerald-100 pb-4 mb-6">
+                <div>
+                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Level 3</span>
+                    <h2 class="heading-font text-2xl text-emerald-600 mt-1">Section C: Read and Answer 阅读理解练习</h2>
+                    <p class="text-sm text-slate-500">Read Ben's profile card below and answer the questions!</p>
+                </div>
+                <div class="text-3xl text-emerald-400">
+                    <i class="fas fa-book-open"></i>
+                </div>
+            </div>
+
+            <!-- Model Profile Box -->
+            <div class="bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl p-5 text-white shadow-md mb-8 border-2 border-white relative">
+                <div class="flex items-center gap-2 mb-2 text-emerald-200 font-bold text-xs uppercase tracking-wider">
+                    <i class="fas fa-quote-left text-lg"></i> Model Profile (范例):
+                </div>
+                <p class="text-base sm:text-lg font-medium leading-relaxed italic bg-white/10 p-4 rounded-xl border border-white/10">
+                    "Hi! My name is <span class="font-bold text-yellow-300 underline">Ben</span>. I am <span class="font-bold text-yellow-300 underline">8 years old</span>. My favourite colour is <span class="font-bold text-yellow-300 underline">blue</span>. I like reading comic books because it is <span class="font-bold text-yellow-300 underline">fun</span>."
+                </p>
+            </div>
+
+            <!-- Quiz Questions -->
+            <div class="space-y-6">
+                <!-- Question 1 -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <p class="font-bold text-slate-800 mb-3 text-base sm:text-lg">1. How old is Ben?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <button onclick="selectOption('q1', 'A')" id="q1-opt-A" class="q1-btn p-3 rounded-xl border-2 border-slate-200 bg-white font-bold text-slate-700 hover:border-emerald-400 text-left transition flex items-center justify-between">
+                            <span>(A) 7 years old</span>
+                            <i class="far fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="selectOption('q1', 'B')" id="q1-opt-B" class="q1-btn p-3 rounded-xl border-2 border-slate-200 bg-white font-bold text-slate-700 hover:border-emerald-400 text-left transition flex items-center justify-between">
+                            <span>(B) 8 years old</span>
+                            <i class="far fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="selectOption('q1', 'C')" id="q1-opt-C" class="q1-btn p-3 rounded-xl border-2 border-slate-200 bg-white font-bold text-slate-700 hover:border-emerald-400 text-left transition flex items-center justify-between">
+                            <span>(C) 9 years old</span>
+                            <i class="far fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <p class="font-bold text-slate-800 mb-3 text-base sm:text-lg">2. What is Ben's favourite colour?</p>
+                    <div class="flex flex-col sm:flex-row gap-3 items-center">
+                        <span class="font-semibold text-slate-600">Answer:</span>
+                        <input type="text" id="q2-input" placeholder="Type colour here (e.g. blue)..." class="px-4 py-2 rounded-xl border-2 border-slate-300 focus:border-emerald-500 focus:outline-none font-bold text-slate-800 w-full sm:w-64">
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <p class="font-bold text-slate-800 mb-3 text-base sm:text-lg">3. Why does Ben like reading comic books?</p>
+                    <div class="flex flex-wrap gap-2 items-center text-base sm:text-lg font-semibold">
+                        <span>Answer: Because it is</span>
+                        <input type="text" id="q3-input" placeholder="Type word..." class="px-4 py-1.5 rounded-xl border-2 border-slate-300 focus:border-emerald-500 focus:outline-none font-bold text-slate-800 w-36 text-center">
+                        <span>.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section C -->
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="checkSectionC()" class="btn-game px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-lg hover:brightness-110 shadow-lg">
+                    Submit Final Quiz <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Summary & Certificate Modal -->
+    <div id="summaryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-4 border-amber-400 relative animate-pop-in text-center">
+            
+            <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-amber-300 text-amber-500 text-4xl shadow-inner">
+                <i class="fas fa-trophy"></i>
+            </div>
+
+            <h2 class="heading-font text-3xl text-slate-800 mb-1">Awesome Job! 🎉</h2>
+            <p class="text-slate-500 font-semibold text-sm mb-4">You completed the English Online Worksheet!</p>
+
+            <div class="bg-amber-50 rounded-2xl p-4 mb-6 border-2 border-amber-200 text-left space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Student Name:</span>
+                    <span id="certName" class="font-bold text-slate-800">Lucas</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Class:</span>
+                    <span id="certClass" class="font-bold text-slate-800">Year 2/3</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Total Score:</span>
+                    <span id="certScore" class="heading-font text-xl text-purple-600">100 / 100</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Stars Earned:</span>
+                    <div id="certStars" class="text-amber-400 text-lg">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="window.print()" class="flex-1 py-3 bg-slate-200 hover:bg-slate-300 rounded-xl font-bold text-slate-700 transition">
+                    <i class="fas fa-print mr-1"></i> Print / Save PDF
+                </button>
+                <button onclick="closeModal()" class="flex-1 py-3 bg-gradient-to-r from-amber-400 to-orange-500 hover:brightness-110 text-white font-bold rounded-xl shadow-md transition">
+                    Keep Playing <i class="fas fa-play ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let soundEnabled = true;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(180, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'fanfare') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(audioCtx.destination);
+                        
+                        noteOsc.type = 'triangle';
+                        noteOsc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        noteGain.gain.setValueAtTime(0.15, now + idx * 0.1);
+                        noteGain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.3);
+                        noteOsc.start(now + idx * 0.1);
+                        noteOsc.stop(now + idx * 0.1 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up text-xl';
+            } else {
+                icon.className = 'fas fa-volume-mute text-xl text-slate-400';
+            }
+        }
+
+        const wordBankData = ["name", "years old", "favourite", "colour", "because"];
+        const answersSectionA = {
+            'blank-1': 'name',
+            'blank-2': 'years old',
+            'blank-3': 'favourite',
+            'blank-4': 'colour',
+            'blank-5': 'because'
+        };
+
+        let currentAnswersA = {
+            'blank-1': null,
+            'blank-2': null,
+            'blank-3': null,
+            'blank-4': null,
+            'blank-5': null
+        };
+
+        let selectedWordChip = null;
+        let selectedQ1 = null;
+        let currentScore = 0;
+        let secAScore = 0;
+        let secBCompleted = false;
+        let secCScore = 0;
+
+        function switchLevel(lvl) {
+            playSound('click');
+            document.querySelectorAll('.level-card').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`level-${lvl}`).classList.remove('hidden');
+
+            // Update Tab Styles
+            for (let i = 1; i <= 3; i++) {
+                const tab = document.getElementById(`tab-lvl-${i}`);
+                if (i === lvl) {
+                    tab.className = 'flex-1 py-2 px-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition bg-purple-500 text-white shadow-md';
+                    tab.querySelector('span').className = 'bg-white text-purple-600 rounded-full w-6 h-6 flex items-center justify-center text-xs heading-font';
+                } else {
+                    tab.className = 'flex-1 py-2 px-3 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100 flex items-center justify-center gap-2 transition';
+                    tab.querySelector('span').className = 'bg-slate-200 text-slate-600 rounded-full w-6 h-6 flex items-center justify-center text-xs heading-font';
+                }
+            }
+        }
+
+        function renderWordBank() {
+            const container = document.getElementById('wordBank');
+            container.innerHTML = '';
+            
+            wordBankData.forEach(word => {
+                // Check if word is already placed in a blank
+                const isPlaced = Object.values(currentAnswersA).includes(word);
+                if (!isPlaced) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `word-chip px-4 py-2 bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold rounded-xl shadow-sm transition border-2 border-amber-500 ${selectedWordChip === word ? 'ring-4 ring-purple-500 scale-105' : ''}`;
+                    btn.innerText = word;
+                    btn.onclick = () => selectWordChip(word);
+                    container.appendChild(btn);
+                }
+            });
+        }
+
+        function selectWordChip(word) {
+            playSound('click');
+            if (selectedWordChip === word) {
+                selectedWordChip = null;
+            } else {
+                selectedWordChip = word;
+            }
+            renderWordBank();
+        }
+
+        // Return word from blank back to bank
+        function returnWord(blankId) {
+            if (currentAnswersA[blankId]) {
+                playSound('click');
+                currentAnswersA[blankId] = null;
+                document.getElementById(blankId).innerText = '';
+                document.getElementById(blankId).classList.remove('bg-purple-100', 'border-purple-600');
+                renderWordBank();
+            } else if (selectedWordChip) {
+                // Place selected chip into clicked blank
+                playSound('click');
+                currentAnswersA[blankId] = selectedWordChip;
+                document.getElementById(blankId).innerText = selectedWordChip;
+                document.getElementById(blankId).classList.add('bg-purple-100', 'border-purple-600');
+                selectedWordChip = null;
+                renderWordBank();
+            }
+        }
+
+        function checkSectionA() {
+            let correctCount = 0;
+            Object.keys(answersSectionA).forEach((blankId, index) => {
+                const userAns = currentAnswersA[blankId];
+                const feedbackEl = document.getElementById(`feedback-${index + 1}`);
+                
+                if (userAns === answersSectionA[blankId]) {
+                    correctCount++;
+                    feedbackEl.innerHTML = '<i class="fas fa-check-circle text-green-500 animate-bounce"></i>';
+                } else {
+                    feedbackEl.innerHTML = '<i class="fas fa-times-circle text-rose-500"></i>';
+                }
+            });
+
+            secAScore = correctCount * 10;
+            updateTotalScore();
+
+            if (correctCount === 5) {
+                playSound('correct');
+                confetti({ particleCount: 50, spread: 60 });
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        function resetSectionA() {
+            playSound('click');
+            currentAnswersA = { 'blank-1': null, 'blank-2': null, 'blank-3': null, 'blank-4': null, 'blank-5': null };
+            selectedWordChip = null;
+            for (let i = 1; i <= 5; i++) {
+                const blank = document.getElementById(`blank-${i}`);
+                blank.innerText = '';
+                blank.classList.remove('bg-purple-100', 'border-purple-600');
+                document.getElementById(`feedback-${i}`).innerHTML = '';
+            }
+            renderWordBank();
+        }
+
+        let canvas, ctx, isDrawing = false;
+
+        function initCanvas() {
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+
+            const startDrawing = (e) => {
+                isDrawing = true;
+                draw(e);
+            };
+
+            const stopDrawing = () => {
+                isDrawing = false;
+                ctx.beginPath();
+                updateProfileCard();
+            };
+
+            const draw = (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+                ctx.strokeStyle = document.getElementById('drawColor').value;
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            };
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mousemove', draw);
+
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchend', stopDrawing);
+            canvas.addEventListener('touchmove', draw);
+        }
+
+        function setAvatarTab(tab) {
+            playSound('click');
+            if (tab === 'preset') {
+                document.getElementById('presetArea').classList.remove('hidden');
+                document.getElementById('drawArea').classList.add('hidden');
+                document.getElementById('tabPreset').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500 text-white';
+                document.getElementById('tabDraw').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700';
+            } else {
+                document.getElementById('presetArea').classList.add('hidden');
+                document.getElementById('drawArea').classList.remove('hidden');
+                document.getElementById('drawArea').classList.add('flex');
+                document.getElementById('tabDraw').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500 text-white';
+                document.getElementById('tabPreset').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700';
+            }
+        }
+
+        function selectAvatar(type) {
+            playSound('click');
+            const imgEl = document.getElementById('cardAvatarImg');
+            if (type === 'boy1') imgEl.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=Lucas';
+            if (type === 'girl1') imgEl.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=Sophia';
+            if (type === 'cat') imgEl.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=Felix';
+            if (type === 'hero') imgEl.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=Aiden';
+        }
+
+        function clearCanvas() {
+            playSound('click');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateProfileCard();
+        }
+
+        function updateProfileCard() {
+            const name = document.getElementById('profName').value || 'Lucas';
+            const age = document.getElementById('profAge').value || '8';
+            const color = document.getElementById('profColorSelect').value || 'Blue';
+            const hobby = document.getElementById('profHobby').value || 'reading comic books';
+            const reason = document.getElementById('profReason').value || 'fun';
+
+            document.getElementById('cardName').innerText = name;
+            document.getElementById('cardAge').innerText = `${age} years old`;
+            document.getElementById('cardColor').innerText = color;
+            document.getElementById('cardHobby').innerText = hobby;
+            document.getElementById('cardReason').innerText = `because it is ${reason}`;
+
+            // Handle custom drawing avatar if draw tab is active
+            if (!document.getElementById('drawArea').classList.contains('hidden')) {
+                const imgEl = document.getElementById('cardAvatarImg');
+                imgEl.src = canvas.toDataURL();
+            }
+        }
+
+        function saveProfileCard() {
+            playSound('correct');
+            secBCompleted = true;
+            confetti({ particleCount: 40, spread: 50 });
+            updateTotalScore();
+            switchLevel(3);
+        }
+
+        function selectOption(q, opt) {
+            playSound('click');
+            selectedQ1 = opt;
+            ['A', 'B', 'C'].forEach(o => {
+                const btn = document.getElementById(`q1-opt-${o}`);
+                if (o === opt) {
+                    btn.className = 'q1-btn p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-700 text-left transition flex items-center justify-between shadow-sm';
+                    btn.querySelector('i').className = 'fas fa-check-circle text-emerald-500';
+                } else {
+                    btn.className = 'q1-btn p-3 rounded-xl border-2 border-slate-200 bg-white font-bold text-slate-700 hover:border-emerald-400 text-left transition flex items-center justify-between';
+                    btn.querySelector('i').className = 'far fa-circle text-slate-300';
+                }
+            });
+        }
+
+        function checkSectionC() {
+            let correct = 0;
+
+            // Q1 check (Option B: 8 years old)
+            if (selectedQ1 === 'B') correct += 10;
+
+            // Q2 check ("blue")
+            const q2Val = document.getElementById('q2-input').value.trim().toLowerCase();
+            if (q2Val === 'blue') correct += 10;
+
+            // Q3 check ("fun")
+            const q3Val = document.getElementById('q3-input').value.trim().toLowerCase();
+            if (q3Val === 'fun') correct += 10;
+
+            secCScore = correct;
+            updateTotalScore();
+
+            if (correct === 30) {
+                playSound('fanfare');
+                confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+            } else {
+                playSound('correct');
+            }
+
+            showSummaryModal();
+        }
+
+        function updateTotalScore() {
+            let total = secAScore + (secBCompleted ? 20 : 0) + secCScore;
+            currentScore = total;
+            document.getElementById('totalScore').innerText = total;
+
+            // Calculate Stars
+            const starContainer = document.getElementById('starContainer');
+            let starsHtml = '';
+            let starCount = 0;
+
+            if (total >= 40) starCount = 1;
+            if (total >= 70) starCount = 2;
+            if (total >= 100) starCount = 3;
+
+            for (let i = 1; i <= 3; i++) {
+                if (i <= starCount) {
+                    starsHtml += '<i class="fas fa-star text-amber-400 animate-bounce-soft"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star text-slate-300"></i>';
+                }
+            }
+            starContainer.innerHTML = starsHtml;
+        }
+
+        function showSummaryModal() {
+            const name = document.getElementById('studentName').value || document.getElementById('profName').value || 'Student';
+            const cls = document.getElementById('studentClass').value || 'Primary Year 2/3';
+
+            document.getElementById('certName').innerText = name;
+            document.getElementById('certClass').innerText = cls;
+            document.getElementById('certScore').innerText = `${currentScore} / 100`;
+
+            const certStars = document.getElementById('certStars');
+            certStars.innerHTML = document.getElementById('starContainer').innerHTML;
+
+            document.getElementById('summaryModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            playSound('click');
+            document.getElementById('summaryModal').classList.add('hidden');
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('studentDate').value = today;
+
+            renderWordBank();
+            initCanvas();
+            updateProfileCard();
+        };
+    </script>
+</body>
+</html>
+```
+
+### Key Highlights
+- **Section A**: Word Bank drag/tap chips with real-time feedback icons and answer validation.
+- **Section B**: Full profile builder featuring live updates, choice of avatar presets or HTML5 drawing canvas, and a colorful preview badge.
+- **Section C**: Model reading comprehension story card with interactive multiple-choice and short text input validation.
+- **Sound & Confetti**: Uses Web Audio API sound synthesizers (chime, error, fanfare) and `canvas-confetti` celebration effects.
